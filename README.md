@@ -9,7 +9,7 @@ This is a fork of [logstash-plugins/logstash-output-loggly](https://github.com/l
 # Logstash Plugin
 
 [![Codeship Build Status](
-https://codeship.com/projects/197592/status?branch=master)](https://app.codeship.com/projects/197592)
+https://codeship.com/projects/5bcb0510-c371-0134-46c6-2621c39d51df/status?branch=master)](https://app.codeship.com/projects/197592)
 
 This is a plugin for [Logstash](https://github.com/elastic/logstash).
 
