@@ -1,6 +1,10 @@
-## Maintainers Needed
+This is a fork of [logstash-plugins/logstash-output-loggly](https://github.com/logstash-plugins/logstash-output-loggly) with the following PRs applied:
 
-This plugin needs maintainers, please comment on https://github.com/logstash-plugins/logstash-output-loggly/issues/20 if you would like to maintain this plugin. Thanks!
+- [#17: Use Logstash logger object vs. stdout](https://github.com/logstash-plugins/logstash-output-loggly/pull/17)
+- [#18: Use Loggly bulk API](https://github.com/logstash-plugins/logstash-output-loggly/pull/18)
+- [#19: Add Loggly supported timestamp field](https://github.com/logstash-plugins/logstash-output-loggly/pull/19)
+
+---
 
 # Logstash Plugin
 
