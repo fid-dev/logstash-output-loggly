@@ -8,7 +8,8 @@ This is a fork of [logstash-plugins/logstash-output-loggly](https://github.com/l
 
 # Logstash Plugin
 
-[![Travis Build Status](https://travis-ci.org/logstash-plugins/logstash-output-loggly.svg)](https://travis-ci.org/logstash-plugins/logstash-output-loggly)
+[![Codeship Build Status](
+https://codeship.com/projects/197592/status?branch=master)](https://app.codeship.com/projects/197592)
 
 This is a plugin for [Logstash](https://github.com/elastic/logstash).
 
