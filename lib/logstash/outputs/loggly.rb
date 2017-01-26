@@ -159,7 +159,7 @@ class LogStash::Outputs::Loggly < LogStash::Outputs::Base
     if event.include?("@timestamp")
         timestamp = event.remove("@timestamp")
         # An existing timestamp field sould be left untouched
-        event["timestamp"] = timestamp unless event.include?("timestamp")
+        event.set("timestamp", timestamp) unless event.include?("timestamp")
     end
   end
 
