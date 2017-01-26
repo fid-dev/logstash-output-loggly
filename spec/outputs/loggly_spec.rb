@@ -13,6 +13,15 @@ describe 'outputs/loggly' do
       '@timestamp' => LogStash::Timestamp.now)
   end
 
+  let(:loggly_formatted_event) do
+    # Loggly output plugin replaces the default @timestamp field
+    #  with Loggly's expected timestamp field (i.e timestamp).
+    formatted_event = event.clone
+    timestamp = formatted_event.remove("@timestamp")
+    formatted_event["timestamp"] = timestamp
+    formatted_event
+  end
+
   context 'when initializing' do
     subject { LogStash::Outputs::Loggly.new(config) }
 
@@ -35,14 +44,14 @@ describe 'outputs/loggly' do
 
       output = LogStash::Outputs::Loggly.new(config)
       allow(output).to receive(:send_event).with('http://logs-01.loggly.com/inputs/xxxxxxx1234567/tag/logstash',
-                                                 event.to_json)
+                                                 loggly_formatted_event.to_json)
       output.receive(event)
     end
 
     it 'should set the default tag to logstash' do
       output = LogStash::Outputs::Loggly.new(config)
       allow(output).to receive(:send_event).with('http://logs-01.loggly.com/inputs/abcdef123456/tag/logstash',
-                                                 event.to_json)
+                                                 loggly_formatted_event.to_json)
       output.receive(event)
     end
 
@@ -50,7 +59,7 @@ describe 'outputs/loggly' do
       config['tag'] = '%{source}'
       output = LogStash::Outputs::Loggly.new(config)
       allow(output).to receive(:send_event).with('http://logs-01.loggly.com/inputs/abcdef123456/tag/someapp',
-                                                 event.to_json)
+                                                 loggly_formatted_event.to_json)
       output.receive(event)
     end
 
@@ -58,7 +67,33 @@ describe 'outputs/loggly' do
       config['tag'] = '%{foobar}'
       output = LogStash::Outputs::Loggly.new(config)
       allow(output).to receive(:send_event).with('http://logs-01.loggly.com/inputs/abcdef123456/tag/logstash',
-                                                 event.to_json)
+                                                 loggly_formatted_event.to_json)
+      output.receive(event)
+    end
+  end
+
+  context 'when transforming @timestamp' do
+    it 'should replace the field named @timestamp with timestamp' do
+      output = LogStash::Outputs::Loggly.new(config)
+      allow(output).to receive(:send_event).with('http://logs-01.loggly.com/inputs/abcdef123456/tag/logstash',
+                                                 loggly_formatted_event.to_json)
+      output.receive(event)
+    end
+
+    it 'should not modify timestamp if @timestamp was renamed via Logstash (i.e mutate replace)' do
+      output = LogStash::Outputs::Loggly.new(config)
+      allow(output).to receive(:send_event).with('http://logs-01.loggly.com/inputs/abcdef123456/tag/logstash',
+                                                 loggly_formatted_event.to_json)
+
+      output.receive(loggly_formatted_event)
+    end
+
+    it 'should only remove @timestamp if both @timestamp and timestamp fields exists (i.e mutate add_field)' do
+      output = LogStash::Outputs::Loggly.new(config)
+      allow(output).to receive(:send_event).with('http://logs-01.loggly.com/inputs/abcdef123456/tag/logstash',
+                                                 loggly_formatted_event.to_json)
+
+      event["timestamp"] = event["@timestamp"]
       output.receive(event)
     end
   end

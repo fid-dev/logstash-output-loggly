@@ -128,6 +128,9 @@ class LogStash::Outputs::Loggly < LogStash::Outputs::Base
     # we should ship logs with the default tag value.
     tag = 'logstash' if /^%{\w+}/.match(tag)
 
+    # Transform @timestamp to Loggly's JSON timestamp field
+    transform_ts(event)
+
     buffer_receive([event, key, tag])
   end # def receive
 
@@ -149,6 +152,17 @@ class LogStash::Outputs::Loggly < LogStash::Outputs::Base
 
 
   private
+  def transform_ts(event)
+    # Transform default event @timestamp field to a Loggly JSON timestamp field.
+    # See https://www.loggly.com/docs/automated-parsing/#json
+
+    if event.include?("@timestamp")
+        timestamp = event.remove("@timestamp")
+        # An existing timestamp field sould be left untouched
+        event["timestamp"] = timestamp unless event.include?("timestamp")
+    end
+  end
+
   def send_event(url, message)
     url = URI.parse(url)
     @logger.info("Loggly URL", :url => url)
